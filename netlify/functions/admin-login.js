@@ -8,7 +8,7 @@ export const handler = async (event) => {
 
   try {
     const { password } = JSON.parse(event.body || '{}');
-    const adminPassword = process.env.ADMIN_PASSWORD || 'MMCTADMIN2026';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
     if (password === adminPassword) {
       return {

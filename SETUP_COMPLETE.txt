@@ -207,7 +207,7 @@ Export data:
 🎯 MONGODB CONNECTION INFO:
 
 MongoDB URL (NOT CURRENTLY USED):
-  mongodb+srv://harihk0506_db_user:Harihk0506@cluster0.8qcm06s.mongodb.net/texperia
+  mongodb+srv://your-username:your-password@your-cluster.mongodb.net/your-database
 
 Why not used:
   • Frontend cannot directly connect to MongoDB securely

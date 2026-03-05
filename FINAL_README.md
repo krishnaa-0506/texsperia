@@ -75,7 +75,7 @@ texperia-2026/
 
 The file `src/lib/mongodb.ts` contains:
 ```typescript
-const MONGODB_URI = 'mongodb+srv://harihk0506_db_user:Harihk0506@cluster0.8qcm06s.mongodb.net/texperia?retryWrites=true&w=majority';
+const MONGODB_URI = 'mongodb+srv://your-username:your-password@your-cluster.mongodb.net/your-database?retryWrites=true&w=majority';
 ```
 
 This is currently NOT being used (it's there for reference).
