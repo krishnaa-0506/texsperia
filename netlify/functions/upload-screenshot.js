@@ -52,7 +52,7 @@ export async function handler(event) {
     const uploadPayload = {
       file,
       fileName: safeFileName,
-      folder: '/texperia-2026/screenshots',
+      folder: '/event-registrations/payment-screenshots',
       useUniqueFileName: true
     };
 
