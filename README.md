@@ -44,12 +44,17 @@ texperia-2026/
 
 ## ⚙️ Configuration
 
-`api/.env` contains:
+Copy `.env.example` to `.env` and configure with your credentials:
 ```env
-MONGODB_URI=mongodb+srv://...  # MongoDB connection
-ADMIN_PASSWORD=hkkk@admin2026  # Admin password
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+MONGODB_DB_NAME=your_database_name
+ADMIN_PASSWORD=your_secure_admin_password
+IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
+IMAGEKIT_URL_ENDPOINT=your_imagekit_url_endpoint
 PORT=3001
 ```
+⚠️ **Never commit `.env` file** - it's in `.gitignore`
 
 ## 🎯 Available Scripts
 
@@ -81,7 +86,7 @@ npm run api       # API only
 ## 🔐 Admin Features
 
 **Access:** Yellow shield icon (bottom-right)  
-**Password:** `hkkk@admin2026`
+**Password:** Set via `ADMIN_PASSWORD` environment variable
 
 ✅ View all registrations  
 ✅ Statistics dashboard  
@@ -195,8 +200,8 @@ npm run dev
 ## 🔐 Admin Access
 
 - Click the yellow shield icon (bottom-right corner)
-- Default password: `hkkk@admin2026`
-- Change password in `server\.env`
+- Password is set in environment variable `ADMIN_PASSWORD`
+- See `NETLIFY_SETUP.md` or `.env.example` for configuration
 
 ## 📊 Admin Features
 
