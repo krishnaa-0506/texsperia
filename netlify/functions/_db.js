@@ -1,11 +1,11 @@
 import { MongoClient } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DB_NAME || 'texperia';
+const dbName = process.env.MONGODB_DB_NAME;
 
 console.log('Database config loaded:', {
   uri: uri ? uri.split('@')[0] + '@***' : 'MISSING',
-  dbName
+  dbName: dbName ? dbName : 'MISSING'
 });
 
 let client;
@@ -15,6 +15,11 @@ export async function getDb() {
   if (!uri) {
     console.error('MONGODB_URI is not set');
     throw new Error('Missing MONGODB_URI environment variable');
+  }
+
+  if (!dbName) {
+    console.error('MONGODB_DB_NAME is not set');
+    throw new Error('Missing MONGODB_DB_NAME environment variable');
   }
 
   // Return existing connection if available
