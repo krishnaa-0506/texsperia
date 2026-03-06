@@ -2,38 +2,6 @@ import { Lightbulb, FileText, Rocket, Box, Car, Wrench, Gamepad2, Trophy } from 
 
 const day1Events = [
   {
-    id: 'am_ideathon',
-    name: 'AM Ideathon (National Level)',
-    icon: Lightbulb,
-    description: 'National Level Hackathon focused on Additive Manufacturing. Individual registration with optional team formation (1-4 members per team). The organizers will provide a problem statement related to additive manufacturing or 3D printing. Participants must analyze the problem and propose a creative technical solution or innovative idea. This is a standalone event.',
-    type: 'Team',
-    minMembers: 1,
-    maxMembers: 4,
-    isNationalEvent: true,
-    isSeparateEvent: true,
-    prize: '₹10,000'
-  },
-  {
-    id: 'paper_presentation',
-    name: 'Paper Presentation',
-    icon: FileText,
-    description: 'Participants present a technical research paper. This event is open domain, meaning participants can present papers from any field such as mechanical engineering, manufacturing, mechatronics, software, artificial intelligence, electronics, or any innovative technical topic.',
-    type: 'Team',
-    minMembers: 2,
-    maxMembers: 4,
-    prize: '₹10,000'
-  },
-  {
-    id: 'innoventure',
-    name: 'Innoventure',
-    icon: Rocket,
-    description: 'A combination of innovation and entrepreneurship. Participants must present an innovative idea or project along with its practical implementation and business potential. Projects can belong to any domain such as hardware, software, AI, robotics, automation, or product innovation.',
-    type: 'Team',
-    minMembers: 2,
-    maxMembers: 4,
-    prize: '₹10,000'
-  },
-  {
     id: 'cad_design',
     name: 'CAD Design Challenge',
     icon: Box,
@@ -52,21 +20,8 @@ const day1Events = [
     prize: '₹10,000'
   },
   {
-    id: 'junk_wars',
-    name: 'Junk Wars',
-    icon: Wrench,
-    description: 'Participants must build a working mechanical device using scrap or mechanical components. Participants may bring their own materials, and some basic components may be provided by the organizers.',
-    type: 'Team',
-    minMembers: 2,
-    maxMembers: 4,
-    prize: '₹10,000'
-  }
-];
-
-const day2Events = [
-  {
     id: 'esports',
-    name: 'Esports',
+    name: 'E-Sports',
     icon: Gamepad2,
     description: 'Competitive gaming tournament conducted on both mobile and PC games. Once registered, you will be added to the specific groups and details will be shared.',
     type: 'Individual',
@@ -86,6 +41,51 @@ const day2Events = [
   }
 ];
 
+const day2Events = [
+  {
+    id: 'am_ideathon',
+    name: 'AM Ideathon (National Level)',
+    icon: Lightbulb,
+    description: 'National Level Hackathon focused on Additive Manufacturing. Individual registration with optional team formation (1-4 members per team). The organizers will provide a problem statement related to additive manufacturing or 3D printing. Participants must analyze the problem and propose a creative technical solution or innovative idea. This is a standalone event.',
+    type: 'Team',
+    minMembers: 1,
+    maxMembers: 4,
+    isNationalEvent: true,
+    isSeparateEvent: true,
+    prize: '₹10,000'
+  },
+  {
+    id: 'innoventure',
+    name: 'Innoventure',
+    icon: Rocket,
+    description: 'A combination of innovation and entrepreneurship. Participants must present an innovative idea or project along with its practical implementation and business potential. Projects can belong to any domain such as hardware, software, AI, robotics, automation, or product innovation.',
+    type: 'Team',
+    minMembers: 2,
+    maxMembers: 4,
+    prize: '₹10,000'
+  },
+  {
+    id: 'paper_presentation',
+    name: 'Paper Presentation',
+    icon: FileText,
+    description: 'Participants present a technical research paper. This event is open domain, meaning participants can present papers from any field such as mechanical engineering, manufacturing, mechatronics, software, artificial intelligence, electronics, or any innovative technical topic.',
+    type: 'Team',
+    minMembers: 2,
+    maxMembers: 4,
+    prize: '₹10,000'
+  },
+  {
+    id: 'junk_wars',
+    name: 'Junk wars',
+    icon: Wrench,
+    description: 'Participants must build a working mechanical device using scrap or mechanical components. Participants may bring their own materials, and some basic components may be provided by the organizers.',
+    type: 'Team',
+    minMembers: 2,
+    maxMembers: 4,
+    prize: '₹10,000'
+  }
+];
+
 export default function EventsSection() {
   return (
     <section className="py-20 bg-black">
@@ -100,7 +100,7 @@ export default function EventsSection() {
             <div className="px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg">
               <h3 className="text-2xl font-bold text-black">DAY 1</h3>
             </div>
-            <h3 className="text-3xl font-bold text-white">Technical Events</h3>
+            <h3 className="text-3xl font-bold text-white">Day 1 Events</h3>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -141,7 +141,7 @@ export default function EventsSection() {
             <div className="px-6 py-2 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-lg">
               <h3 className="text-2xl font-bold text-black">DAY 2</h3>
             </div>
-            <h3 className="text-3xl font-bold text-white">Skill & Strategy Events</h3>
+            <h3 className="text-3xl font-bold text-white">Day 2 Events</h3>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -198,7 +198,7 @@ export default function EventsSection() {
           </div>
           <div className="mt-8 pt-8 border-t border-yellow-500/30 text-center">
             <p className="text-2xl font-bold text-yellow-400">
-              Day 1 Prize Pool: ₹60,000 | Day 2 Prize Pool: ₹6,000+
+              Day 1 Prize Pool: ₹26,000 | Day 2 Prize Pool: ₹40,000
             </p>
           </div>
         </div>
