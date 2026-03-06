@@ -41,11 +41,31 @@ export default function RegistrationForm() {
       delete newDetails[eventId];
       setEventDetails(newDetails);
     } else {
-      if (selectedEvents.length >= 3) {
-        setError('You can select a maximum of 3 events');
+      const isAMIdeathon = eventId === 'am_ideathon';
+      const hasAMIdeathon = selectedEvents.includes('am_ideathon');
+      const otherEventCount = selectedEvents.filter(id => id !== 'am_ideathon').length;
+
+      // If selecting AM Ideathon and already have 3 other events
+      if (isAMIdeathon && otherEventCount >= 3 && !hasAMIdeathon) {
+        setError('Please remove some other events first. You can select AM Ideathon + 3 other events');
         setTimeout(() => setError(''), 3000);
         return;
       }
+
+      // If selecting a non-AM event and already have AM + 3 others
+      if (!isAMIdeathon && hasAMIdeathon && otherEventCount >= 3) {
+        setError('You already have AM Ideathon + 3 other events. Remove one first.');
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+
+      // If selecting a non-AM event and already have 3 other events (without AM)
+      if (!isAMIdeathon && !hasAMIdeathon && otherEventCount >= 3) {
+        setError('You can select a maximum of 3 events (or AM Ideathon + 3 other events)');
+        setTimeout(() => setError(''), 3000);
+        return;
+      }
+
       setSelectedEvents([...selectedEvents, eventId]);
       setEventDetails({
         ...eventDetails,
@@ -80,10 +100,22 @@ export default function RegistrationForm() {
   };
 
   const calculateTotalAmount = () => {
+    const hasAMIdeathon = selectedEvents.includes('am_ideathon');
+    const otherSelectedEvents = selectedEvents.filter(id => id !== 'am_ideathon');
+
+    // AM Ideathon cost: ₹400 × team members
+    let amIdeathonCost = 0;
+    if (hasAMIdeathon) {
+      const amMembers = eventDetails['am_ideathon']?.numberOfMembers || 1;
+      amIdeathonCost = amMembers * 400;
+    }
+
+    // Other events cost: ₹400 × max team size
+    let otherEventsCost = 0;
     let maxTeamMembers = 0;
     let hasIndividualEvents = false;
 
-    selectedEvents.forEach(eventId => {
+    otherSelectedEvents.forEach(eventId => {
       const event = events.find(e => e.id === eventId);
       if (event?.type === 'Individual') {
         hasIndividualEvents = true;
@@ -93,11 +125,10 @@ export default function RegistrationForm() {
       }
     });
 
-    // If there are team events, use the max team member count
-    // If only individual events, same person pays once (count = 1)
     const totalParticipants = maxTeamMembers > 0 ? maxTeamMembers : (hasIndividualEvents ? 1 : 0);
+    otherEventsCost = totalParticipants * 400;
 
-    return totalParticipants * 400;
+    return amIdeathonCost + otherEventsCost;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -125,6 +156,7 @@ export default function RegistrationForm() {
 
     for (const eventId of selectedEvents) {
       const event = events.find(e => e.id === eventId);
+      // Skip team details check for Individual events (including AM Ideathon)
       if (event?.type !== 'Individual') {
         const details = eventDetails[eventId];
         if (!details?.teamName || !details?.numberOfMembers || !details?.memberNames || !details?.teamLeaderPhone) {
@@ -349,10 +381,34 @@ export default function RegistrationForm() {
           {formData.participationDay && (
             <div className="mb-8">
               <h3 className="text-2xl font-bold text-yellow-400 mb-4">
-                Select Events (Maximum 3)
+                Select Events
               </h3>
+              {selectedEvents.includes('am_ideathon') && (
+                <div className="mb-4 p-4 bg-blue-500/20 border border-blue-500/50 rounded-lg">
+                  <p className="text-blue-300 font-semibold mb-2">ℹ️ Separate Event Notice</p>
+                  <p className="text-sm text-blue-200">
+                    <strong>AM Ideathon (National Level)</strong> is a separate standalone event. You will pay separately for this event (₹400 per team member).
+                  </p>
+                </div>
+              )}
               <p className="text-gray-400 mb-6">
-                You have selected {selectedEvents.length} of 3 events
+                {selectedEvents.includes('am_ideathon') 
+                  ? `You have selected: AM Ideathon (National Level) + ${selectedEvents.filter(id => id !== 'am_ideathon').length} of 3 other events`
+                  : `You have selected ${selectedEvents.length} of 3 events`
+                }
+              </p>
+              <div className="mb-4 p-4 bg-green-500/20 border border-green-500/50 rounded-lg">
+                <p className="text-green-300 font-semibold mb-2">💰 Pricing Structure</p>
+                <ul className="text-sm text-green-200 space-y-1">
+                  <li><strong>AM Ideathon:</strong> ₹400 per team member (billed separately)</li>
+                  <li><strong>Other 5 Events:</strong> ₹400 per person covers ALL selected events (select any 3)</li>
+                </ul>
+                <p className="text-xs text-green-200 mt-2">
+                  Example: Team of 4 selecting Innoventure + CAD Design = ₹1,600 total (covers both events)
+                </p>
+              </div>
+              <p className="text-gray-400 mb-4 text-sm">
+                <strong>Note:</strong> If you select an individual event (like CAD Design) along with a team event, all team members will be registered individually for that event.
               </p>
 
               <div className="space-y-4">
@@ -382,33 +438,49 @@ export default function RegistrationForm() {
                               <Users className="w-5 h-5 text-gray-400" />
                             )}
                           </div>
-                          <p className="text-sm text-gray-400 ml-8">
-                            {event.type === 'Individual' 
-                              ? 'Individual' 
-                              : `Team ${event.minMembers ? `(${event.minMembers}-${event.maxMembers} members)` : ''}`}
-                          </p>
+                          <div className="ml-8">
+                            <p className="text-sm text-gray-400">
+                              {event.type === 'Individual' 
+                                ? 'Individual Event' 
+                                : `Team ${event.minMembers ? `(${event.minMembers}-${event.maxMembers} members)` : ''}`}
+                            </p>
+                            {event.type === 'Individual' && selectedEvents.some(id => {
+                              const e = events.find(evt => evt.id === id);
+                              return e?.type !== 'Individual' && id !== event.id;
+                            }) && (
+                              <p className="text-xs text-blue-300 mt-1">
+                                ℹ️ All team members from your group events will be registered individually
+                              </p>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     {selectedEvents.includes(event.id) && event.type !== 'Individual' && (
                       <div className="mt-4 ml-8 p-4 bg-gray-900 rounded-lg border border-gray-700">
-                        <h5 className="text-lg font-bold text-yellow-400 mb-4">Team Details</h5>
+                        <h5 className="text-lg font-bold text-yellow-400 mb-4">
+                          {event.id === 'am_ideathon' ? 'Team Details (Individual Registration with Team Option)' : 'Team Details'}
+                        </h5>
 
                         <div className="grid md:grid-cols-2 gap-4">
-                          <div className="md:col-span-2">
-                            <label className="block text-gray-300 mb-2">Team Name *</label>
-                            <input
-                              type="text"
-                              required
-                              value={eventDetails[event.id]?.teamName || ''}
-                              onChange={(e) => handleEventDetailChange(event.id, 'teamName', e.target.value)}
-                              className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
-                            />
-                          </div>
+                          {event.id !== 'am_ideathon' && (
+                            <div className="md:col-span-2">
+                              <label className="block text-gray-300 mb-2">Team Name *</label>
+                              <input
+                                type="text"
+                                required
+                                value={eventDetails[event.id]?.teamName || ''}
+                                onChange={(e) => handleEventDetailChange(event.id, 'teamName', e.target.value)}
+                                className="w-full px-4 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:border-yellow-500 focus:outline-none"
+                              />
+                            </div>
+                          )}
 
                           <div>
-                            <label className="block text-gray-300 mb-2">Number of Members (including you) ({event.minMembers}-{event.maxMembers}) *</label>
+                            <label className="block text-gray-300 mb-2">
+                              {event.id === 'am_ideathon' ? 'Team Size (1-4 members)' : `Number of Members (${event.minMembers}-${event.maxMembers})`} *
+                            </label>
                             <input
                               type="number"
                               required
@@ -421,7 +493,9 @@ export default function RegistrationForm() {
                           </div>
 
                           <div>
-                            <label className="block text-gray-300 mb-2">First Person / Coordinator Phone *</label>
+                            <label className="block text-gray-300 mb-2">
+                              {event.id === 'am_ideathon' ? 'Team Coordinator Phone' : 'First Person / Coordinator Phone'} *
+                            </label>
                             <input
                               type="tel"
                               required
@@ -460,7 +534,49 @@ export default function RegistrationForm() {
                 <div className="text-center">
                   <p className="text-gray-300 mb-2">Total Amount</p>
                   <p className="text-5xl font-bold text-yellow-400">₹{calculateTotalAmount()}</p>
-                  <p className="text-sm text-gray-400 mt-2">₹400 per participant</p>
+                  <div className="text-sm text-gray-400 mt-4 space-y-2">
+                    {selectedEvents.includes('am_ideathon') && (
+                      <p>
+                        <strong>AM Ideathon (Separate):</strong> <span className="text-yellow-300">₹{(eventDetails['am_ideathon']?.numberOfMembers || 1) * 400}</span> 
+                        <span className="text-xs ml-2">({eventDetails['am_ideathon']?.numberOfMembers || 1} member{(eventDetails['am_ideathon']?.numberOfMembers || 1) !== 1 ? 's' : ''} × ₹400)</span>
+                      </p>
+                    )}
+                    {selectedEvents.filter(id => id !== 'am_ideathon').length > 0 && (
+                      <>
+                        <p className="border-t border-yellow-500/30 pt-2">
+                          <strong>Other Events (₹400/person for all selected):</strong> 
+                          <span className="text-yellow-300 ml-2">₹{(() => {
+                            const otherEvents = selectedEvents.filter(id => id !== 'am_ideathon');
+                            let maxTeams = 0;
+                            let hasIndiv = false;
+                            otherEvents.forEach(eventId => {
+                              const event = events.find(e => e.id === eventId);
+                              if (event?.type === 'Individual') {
+                                hasIndiv = true;
+                              } else {
+                                maxTeams = Math.max(maxTeams, eventDetails[eventId]?.numberOfMembers || 1);
+                              }
+                            });
+                            const count = maxTeams > 0 ? maxTeams : (hasIndiv ? 1 : 0);
+                            return count * 400;
+                          })()}</span>
+                        </p>
+                        <div className="text-xs text-gray-500 ml-4">
+                          {selectedEvents.filter(id => id !== 'am_ideathon').map(eventId => {
+                            const event = events.find(e => e.id === eventId);
+                            return (
+                              <p key={eventId}>• {event?.name}</p>
+                            );
+                          })}
+                        </div>
+                      </>
+                    )}
+                    <p className="text-yellow-400 font-semibold mt-3 border-t border-yellow-500/30 pt-2 text-xs">
+                      {selectedEvents.includes('am_ideathon') && '✓ AM Ideathon billed separately'}
+                      {selectedEvents.includes('am_ideathon') && selectedEvents.filter(id => id !== 'am_ideathon').length > 0 && <br />}
+                      {selectedEvents.filter(id => id !== 'am_ideathon').length > 0 && '✓ Other events: single payment covers all selected events'}
+                    </p>
+                  </div>
                 </div>
               </div>
 

@@ -3,12 +3,14 @@ import { Lightbulb, FileText, Rocket, Box, Car, Wrench, Gamepad2, Trophy } from 
 const day1Events = [
   {
     id: 'am_ideathon',
-    name: 'AM Ideathon',
+    name: 'AM Ideathon (National Level)',
     icon: Lightbulb,
-    description: 'This event is specifically focused on Additive Manufacturing. The organizers will provide a problem statement related to additive manufacturing or 3D printing. Participants must analyze the problem and propose a creative technical solution or innovative idea.',
+    description: 'National Level Hackathon focused on Additive Manufacturing. Individual registration with optional team formation (1-4 members per team). The organizers will provide a problem statement related to additive manufacturing or 3D printing. Participants must analyze the problem and propose a creative technical solution or innovative idea. This is a standalone event.',
     type: 'Team',
-    minMembers: 2,
+    minMembers: 1,
     maxMembers: 4,
+    isNationalEvent: true,
+    isSeparateEvent: true,
     prize: '₹10,000'
   },
   {
